@@ -28,6 +28,11 @@ Route.group(() => {
     Route.get('teaminvites', 'InviteController.showTeamInvite')
     Route.get('teaminvites/:team_id', 'InviteController.TeamInviteAccept')
 
+    Route.delete('friendinvites', 'FriendController.destroyInvite')
+    Route.get('friendinvites', 'FriendController.showFriendInvite')
+    Route.post('friendinvites', 'FriendController.storeInvite')
+    Route.resource('friend', 'FriendController').apiOnly()
+
     Route.resource('playlist', 'PlaylistController')
         .apiOnly()
         .validator(new Map([[['playlist.store'], ['Playlist']]]))

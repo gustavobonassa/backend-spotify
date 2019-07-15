@@ -27,6 +27,12 @@ class User extends Model {
     teams() {
         return this.belongsToMany('App/Models/Team').pivotModel('App/Models/UserTeam')
     }
+    friend() {
+        return this.belongsToMany('App/Models/User', 'user_id', 'friend_id').pivotModel('App/Models/Friend')
+    }
+    friendInvite() {
+        return this.belongsToMany('App/Models/User', 'friend_id', 'user_id').pivotModel('App/Models/FriendInvite')
+    }
 
     async is(expression) {
         const team = await this.teamJoins()

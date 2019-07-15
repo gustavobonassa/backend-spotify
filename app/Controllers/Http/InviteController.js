@@ -16,7 +16,11 @@ class InviteController {
     }
     async showTeamInvite({ request, auth }) {
 
-        const invites = await TeamInvite.query().where('email',auth.user.email).fetch()
+        const invites = await TeamInvite.query()
+            .where('email', auth.user.email)
+            .with('team')
+            .with('user')
+            .fetch()
 
         return invites
     }
@@ -29,13 +33,13 @@ class InviteController {
 
         await TeamInvite.createMany(data)
     }
-    async TeamInviteAccept({ params, auth }){
+    async TeamInviteAccept({ params, auth }) {
         const invites = await TeamInvite
             .findByOrFail({ email: auth.user.email, team_id: params.team_id })
 
         await invites.delete()
 
-        await UserTeam.findOrCreate({user_id:auth.user.id,team_id:params.team_id})
+        await UserTeam.findOrCreate({ user_id: auth.user.id, team_id: params.team_id })
     }
 }
 

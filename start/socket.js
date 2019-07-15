@@ -15,4 +15,6 @@
 
 const Ws = use('Ws')
 
-Ws.channel('chat', 'SongController')
+Ws.channel('song', 'SongController')
+
+Ws.channel('chat', 'ChatController').middleware(['auth'])

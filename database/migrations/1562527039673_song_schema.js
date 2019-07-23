@@ -23,6 +23,7 @@ class SongSchema extends Schema {
       table.string('album', 40)
       table.string('type', 20)
       table.string('subtype', 20)
+      table.string('duration', 20)
       table.timestamps()
     })
   }

@@ -6,6 +6,9 @@ const fs = require('fs');
 const cloudinary = require('../../../resources/CloudinaryService');
 
 class UserController {
+    async index({ request, response, auth }){
+        return response.json(auth.user)
+    }
     async store({ request, response, auth }) {
         const data = request.only(['username', 'email', 'password'])
         const upload = request.file('avatar')

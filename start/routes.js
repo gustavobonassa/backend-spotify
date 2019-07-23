@@ -18,7 +18,6 @@ Route.post('/search', 'SongController.search')
 
 Route.group(() => {
     Route.delete('/song/:id', 'SongController.destroy')
-    Route.get('users', 'UserController.index')
 
     Route.get('roles', 'RoleController.index')
 

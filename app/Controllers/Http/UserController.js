@@ -6,9 +6,6 @@ const fs = require('fs');
 const cloudinary = require('../../../resources/CloudinaryService');
 
 class UserController {
-    async index({ request, response, auth }){
-        return response.json(auth.user)
-    }
     async store({ request, response, auth }) {
         const data = request.only(['username', 'email', 'password'])
         const upload = request.file('avatar')
@@ -34,11 +31,11 @@ class UserController {
             chunk_size: 6000000
         })
         fs.unlinkSync(`tmp/uploads/${fileName}`);
-        await User.create({ ...data, avatar: result.url})
+        const user = await User.create({ ...data, avatar: result.url})
 
         const token = await auth.attempt(data.email, data.password)
 
-        return token
+        return {...token, user}
     }
 }
 

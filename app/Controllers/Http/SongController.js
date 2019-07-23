@@ -5,6 +5,8 @@ const fs = require('fs');
 const ytdl = require('ytdl-core');//baixa video, audio do yt
 const searchYt = require('youtube-search');//procura no yt
 const cloudinary = require('../../../resources/CloudinaryService');
+const moment = require("moment");
+const momentDurationFormatSetup = require("moment-duration-format");
 
 class YoutubeController {
     async search({ request, response }) {
@@ -49,13 +51,18 @@ class YoutubeController {
                     fs.unlink(`tmp/uploads/${filename}.${data.type}`, function (err) {
                         if (err) throw err
                         console.log('File deleted')
+                        var tempo = moment.duration(parseInt(infoSong.length_seconds), 'seconds').format("m:ss");
                         Song.create({
                             playlist_id: data.playlist,
                             name: infoSong.title,
                             url: result.url,
                             type: 'audio',
                             subtype: data.type,
-                            publicid: result.public_id
+                            publicid: result.public_id,
+                            album: infoSong.media.album || null,
+                            author: infoSong.media.artist || null,
+                            thumbnail: infoSong.player_response.videoDetails.thumbnail.thumbnails[0].url,
+                            duration: tempo
                         })
                     })
                 });

@@ -24,7 +24,7 @@ class YoutubeController {
     }
 
     async download({ request, response }) {
-        const data = request.only(['url', 'type', 'quality', 'playlist'])
+        const data = request.only(['url', 'type', 'quality', 'playlist', 'name', 'artist'])
         let video
         let filename = Date.now()
         const filter = (data.type === "mp3") ? 'audioonly' : null;
@@ -54,13 +54,13 @@ class YoutubeController {
                         var tempo = moment.duration(parseInt(infoSong.length_seconds), 'seconds').format("m:ss");
                         Song.create({
                             playlist_id: data.playlist,
-                            name: infoSong.title,
+                            name: data.name || infoSong.media.song || infoSong.title,
                             url: result.url,
                             type: 'audio',
                             subtype: data.type,
                             publicid: result.public_id,
                             album: infoSong.media.album || null,
-                            author: infoSong.media.artist || null,
+                            author: data.artist || infoSong.media.artist || null,
                             thumbnail: infoSong.player_response.videoDetails.thumbnail.thumbnails[0].url,
                             duration: tempo
                         })

@@ -2,14 +2,17 @@
 const Song = use('App/Models/Song')
 const fs = require('fs');
 const ytdl = require('ytdl-core');
+const moment = require("moment");
+const momentDurationFormatSetup = require("moment-duration-format");
 const cloudinary = require('../../../resources/CloudinaryService');
-class YoutubeController {
+
+class SongController {
     constructor ({ socket, request }) {
         this.socket = socket
         this.request = request
 
     }
-    onMessage (data){
+    onSong (data){
         //this.socket.broadcastToAll('message', data)
         let video
         let filename = Date.now()
@@ -61,4 +64,4 @@ class YoutubeController {
     }
 }
 
-module.exports = YoutubeController
+module.exports = SongController

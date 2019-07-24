@@ -7,18 +7,16 @@ const searchYt = require('youtube-search');//procura no yt
 const cloudinary = require('../../../resources/CloudinaryService');
 const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
+var opts = require("../../../config/yt-api")
 
-class YoutubeController {
+class SongController {
     async search({ request, response }) {
         const data = request.only(['search', 'maxResults'])
         if(!data.search){
             return response.status(401).send({ message: 'Digite algo' })
         }
-        var opts = {
-            maxResults: data.maxResults || 5,
-            type: 'video',
-            key: 'AIzaSyDy1velmfau4ecc3olUVZdMCjww47LGxcc'
-        };
+
+        opts = {...opts, maxResults: data.maxResults || 5}
         const busca = await searchYt(data.search, opts);
         return busca
     }
@@ -80,4 +78,4 @@ class YoutubeController {
     }
 }
 
-module.exports = YoutubeController
+module.exports = SongController

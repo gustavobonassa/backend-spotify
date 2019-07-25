@@ -12,11 +12,11 @@ var opts = require("../../../config/yt-api")
 class SongController {
     async search({ request, response }) {
         const data = request.only(['search', 'maxResults'])
-        if(!data.search){
+        if (!data.search) {
             return response.status(401).send({ message: 'Digite algo' })
         }
 
-        opts = {...opts, maxResults: data.maxResults || 5}
+        opts = { ...opts, maxResults: data.maxResults || 5 }
         const busca = await searchYt(data.search, opts);
         return busca
     }
@@ -68,10 +68,10 @@ class SongController {
     }
     async destroy({ params, response }) {
         const song = await Song.query().where('id', params.id).first()
-        if(!song){
+        if (!song) {
             return response.status(404).send({ message: 'Som não encontrado' })
         }
-        await cloudinary.uploader.destroy(song.publicid, {resource_type: "video"})
+        await cloudinary.uploader.destroy(song.publicid, { resource_type: "video" })
 
 
         await song.delete()

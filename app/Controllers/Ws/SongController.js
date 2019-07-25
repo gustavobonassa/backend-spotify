@@ -7,12 +7,12 @@ const momentDurationFormatSetup = require("moment-duration-format");
 const cloudinary = require('../../../resources/CloudinaryService');
 
 class SongController {
-    constructor ({ socket, request }) {
+    constructor({ socket, request, auth }) {
         this.socket = socket
         this.request = request
-
+        this.auth = auth
     }
-    onSong (data){
+    onSong(data) {
         //this.socket.broadcastToAll('message', data)
         let video
         let filename = Date.now()
@@ -25,12 +25,20 @@ class SongController {
         })
         video.on('progress', (chunkLength, downloaded, total) => {
             console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
-            let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`
-            this.socket.broadcastToAll('message', baixando)
+            //let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`
+            var tempo = moment.duration(parseInt(infoSong.length_seconds), 'seconds').format("m:ss");
+            let baixando = {
+                atualSize: (downloaded / 1024 / 1024).toFixed(2),
+                maxSize: (total / 1024 / 1024).toFixed(2),
+                audioName: infoSong.title,
+                duration: tempo,
+                finished: false
+            }
+            this.socket.emit('message', baixando)
         });
         video.on('end', () => {
             console.log('terminou de baixar')
-            this.socket.broadcastToAll('message', 'terminou de baixar, mandando para a nuvem')
+            this.socket.emit('message', { finished: true })
             cloudinary.uploader.upload(`tmp/uploads/${filename}.${data.type}`, {
                 resource_type: "auto",
                 public_id: `songs/${filename}`,
@@ -58,7 +66,6 @@ class SongController {
                         })
                     })
                 });
-                this.socket.broadcastToAll('message', 'Salvo na nuvem com sucesso, arquivo deletado do servidor')
         });
 
     }

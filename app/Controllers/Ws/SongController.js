@@ -24,36 +24,38 @@ class SongController {
         let infoSong
 
 
-        await video.on('info', (info) => {
-            infoSong = info
-            await video.on('progress', (chunkLength, downloaded, total) => {
-                //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
-                //let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`
-                var tempo = moment.duration(parseInt(infoSong.length_seconds), 'seconds').format("m:ss");
-                var atualSize = (downloaded / 1024 / 1024).toFixed(2)
-                var maxSize = (total / 1024 / 1024).toFixed(2)
-                var percent = parseInt((100 * atualSize) / maxSize);
-
-                let baixando = {
-                    atualSize,
-                    maxSize,
-                    audioName: infoSong.title,
-                    duration: tempo,
-                    finished: false,
-                    percent
-                }
-
-                var index = requests.findIndex((e) => e.audioName === baixando.audioName);
-                if (index === -1) {
-                    requests.push(baixando);
-                } else {
-                    requests[index] = baixando;
-                }
-                console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB) Musica: ${baixando.audioName} Duracao: ${baixando.duration}\n`);
-
-                this.socket.emit('message', requests)
-            });
+        await video.once('info', (info) => {
+            infoSong = info;
+            console.log(infoSong);
         })
+        console.log(infoSong);
+        await video.on('progress', (chunkLength, downloaded, total) => {
+            //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
+            //let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`
+            var tempo = moment.duration(parseInt(infoSong.length_seconds), 'seconds').format("m:ss");
+            var atualSize = (downloaded / 1024 / 1024).toFixed(2)
+            var maxSize = (total / 1024 / 1024).toFixed(2)
+            var percent = parseInt((100 * atualSize) / maxSize);
+
+            let baixando = {
+                atualSize,
+                maxSize,
+                audioName: infoSong.title,
+                duration: tempo,
+                finished: false,
+                percent
+            }
+
+            var index = requests.findIndex((e) => e.audioName === baixando.audioName);
+            if (index === -1) {
+                requests.push(baixando);
+            } else {
+                requests[index] = baixando;
+            }
+            console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB) Musica: ${baixando.audioName} Duracao: ${baixando.duration}\n`);
+
+            this.socket.emit('message', requests)
+        });
         id++
         await video.on('end', () => {
             console.log('terminou de baixar')

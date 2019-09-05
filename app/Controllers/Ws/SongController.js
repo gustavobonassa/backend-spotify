@@ -24,9 +24,8 @@ class SongController {
         let infoSong
 
 
-        infoSong = await video.on('info', (info) => {
-            return info
-        })
+        infoSong = await ytdl.getInfo(data.url, (info) => { return info });
+
         await video.on('progress', (chunkLength, downloaded, total) => {
             //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
             //let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`

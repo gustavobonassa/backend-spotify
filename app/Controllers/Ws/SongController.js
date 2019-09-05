@@ -28,7 +28,7 @@ class SongController {
             infoSong = info
         })
         await video.on('progress', (chunkLength, downloaded, total) => {
-            console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
+            //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
             //let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`
             var tempo = moment.duration(parseInt(infoSong.length_seconds), 'seconds').format("m:ss");
             var atualSize = (downloaded / 1024 / 1024).toFixed(2)
@@ -50,6 +50,7 @@ class SongController {
             } else {
                 requests[index] = baixando;
             }
+            console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB) Musica: ${baixando.audioName} Duracao: ${baixando.duration}\n`);
 
             this.socket.emit('message', requests)
         });

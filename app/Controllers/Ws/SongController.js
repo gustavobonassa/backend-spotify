@@ -24,7 +24,8 @@ class SongController {
         var infoSong = {};
 
 
-        await video.on('info', (info) => {
+        ytdl.getInfo(data.url, (err, info) => {
+            if (err) throw err;
             infoSong = info;
         })
         await video.on('progress', (chunkLength, downloaded, total) => {

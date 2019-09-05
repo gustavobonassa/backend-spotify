@@ -19,7 +19,7 @@ class SongController {
         let video
         let filename = Date.now()
         const filter = (data.type === "mp3") ? 'audioonly' : null;
-        video = ytdl(data.url, { filter: filter, quality: data.quality })
+        video = await ytdl(data.url, { filter: filter, quality: data.quality })
         video.pipe(fs.createWriteStream(`tmp/uploads/${filename}.${data.type}`))
         var infoSong = {};
 

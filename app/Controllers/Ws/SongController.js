@@ -24,7 +24,7 @@ class SongController {
         var infoSong = {};
 
 
-        ytdl.getInfo(data.url, (err, info) => {
+        await ytdl.getInfo(data.url, (err, info) => {
             if (err) throw err;
             infoSong = info;
         })

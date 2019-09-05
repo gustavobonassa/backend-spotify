@@ -21,13 +21,7 @@ class SongController {
         const filter = (data.type === "mp3") ? 'audioonly' : null;
         video = await ytdl(data.url, { filter: filter, quality: data.quality })
         video.pipe(fs.createWriteStream(`tmp/uploads/${filename}.${data.type}`))
-        let infoSong
-
-
-        await video.once('info', (info) => {
-            infoSong = info;
-            console.log(infoSong);
-        })
+        let infoSong = await video.on('info', info);
         console.log(infoSong);
         await video.on('progress', (chunkLength, downloaded, total) => {
             //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);

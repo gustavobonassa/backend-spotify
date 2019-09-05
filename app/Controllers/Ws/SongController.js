@@ -24,13 +24,12 @@ class SongController {
         var infoSong = {};
 
 
-        await ytdl.getInfo(data.url, (err, info) => {
-            if (err) throw err;
+        await video.on('info', (info) => {
             infoSong = info;
             console.log("musica 1 " + infoSong.title)
         })
         console.log(infoSong.title)
-        video.on('progress', (chunkLength, downloaded, total) => {
+        await video.on('progress', (chunkLength, downloaded, total) => {
             //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
             //let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`
             var tempo = moment.duration(parseInt(infoSong.length_seconds), 'seconds').format("m:ss");

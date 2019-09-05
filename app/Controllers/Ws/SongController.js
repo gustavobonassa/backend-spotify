@@ -26,7 +26,7 @@ class SongController {
 
         await video.on('info', (info) => {
             infoSong = info;
-            console.log("musica 1 " + infoSong.title)
+            console.log("musica 1 " + infoSong)
         })
         console.log(infoSong.title)
         await video.on('progress', (chunkLength, downloaded, total) => {

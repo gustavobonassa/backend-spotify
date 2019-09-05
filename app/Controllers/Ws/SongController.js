@@ -30,7 +30,7 @@ class SongController {
         await video.on('progress', (chunkLength, downloaded, total) => {
             //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
             //let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`
-            var tempo = moment.duration(parseInt(infoSong.player_response.videoDetails.length_seconds), 'seconds').format("m:ss");
+            var tempo = moment.duration(parseInt(infoSong.player_response.videoDetails.lengthSeconds), 'seconds').format("m:ss");
             var atualSize = (downloaded / 1024 / 1024).toFixed(2)
             var maxSize = (total / 1024 / 1024).toFixed(2)
             var percent = parseInt((100 * atualSize) / maxSize);
@@ -58,7 +58,7 @@ class SongController {
         await video.on('end', () => {
             console.log('terminou de baixar')
             let baixando = {
-                audioName: infoSong.title,
+                audioName: infoSong.player_response.videoDetails.title,
                 finished: true,
                 percent: 100,
                 message: 'Salvando na nuvem...'
@@ -82,10 +82,10 @@ class SongController {
                     //console.log(result, error)
                     fs.unlinkSync(`tmp/uploads/${filename}.${data.type}`)
                     console.log('File deleted')
-                    var tempo = moment.duration(parseInt(infoSong.length_seconds), 'seconds').format("m:ss");
+                    var tempo = moment.duration(parseInt(infoSong.player_response.videoDetails.lengthSeconds), 'seconds').format("m:ss");
                     Song.create({
                         playlist_id: data.playlist,
-                        name: data.name || infoSong.media.song || infoSong.title,
+                        name: data.name || infoSong.media.song || infoSong.player_response.videoDetails.title,
                         url: result.url,
                         type: 'audio',
                         subtype: data.type,
@@ -97,7 +97,7 @@ class SongController {
                     })
                 });
             baixando = {
-                audioName: infoSong.title,
+                audioName: infoSong.player_response.videoDetails.title,
                 finished: true,
                 percent: 100,
                 message: 'Salvo com sucesso'

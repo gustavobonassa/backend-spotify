@@ -24,8 +24,8 @@ class SongController {
         let infoSong
 
 
-        await video.on('info', (info) => {
-            infoSong = info
+        infoSong = await video.on('info', (info) => {
+            return info
         })
         await video.on('progress', (chunkLength, downloaded, total) => {
             //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);

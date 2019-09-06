@@ -6,7 +6,8 @@ const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
 const cloudinary = require('../../../resources/CloudinaryService');
 
-var id = -1;
+var requests = [];
+
 class SongController {
     constructor({ socket, request, auth }) {
         this.socket = socket
@@ -19,7 +20,6 @@ class SongController {
         console.log(data);
     }
     async onSong(data) {
-        var requests = [];
         //this.socket.broadcastToAll('message', data)
         let video
         let filename = Date.now()
@@ -46,20 +46,19 @@ class SongController {
                 audioName: infoSong.player_response.videoDetails.title,
                 duration: tempo,
                 finished: false,
-                percent
+                percent,
             }
 
-            var index = requests.findIndex((e) => e.audioName === baixando.audioName);
+            var index = requests.socket[this.socket.id].findIndex((e) => e.audioName === baixando.audioName);
             if (index === -1) {
-                requests.push(baixando);
+                requests.socket[this.socket.id].push(baixando);
             } else {
-                requests[index] = baixando;
+                requests[index].socket[this.socket.id] = baixando;
             }
             console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB) Musica: ${baixando.audioName} Duracao: ${baixando.duration}\n`);
 
-            this.socket.emitTo('message', requests, [this.socket.id])
+            this.socket.emitTo('message', requests.socket[this.socket.id], [this.socket.id])
         });
-        id++
         await video.on('end', () => {
             console.log('terminou de baixar')
             let baixando = {
@@ -68,13 +67,13 @@ class SongController {
                 percent: 100,
                 message: 'Salvando na nuvem...'
             }
-            var index = requests.findIndex((e) => e.audioName === baixando.audioName);
+            var index = requests.socket[this.socket.id].findIndex((e) => e.audioName === baixando.audioName);
             if (index === -1) {
-                requests.push(baixando);
+                requests.socket[this.socket.id].push(baixando);
             } else {
-                requests[index] = baixando;
+                requests[index].socket[this.socket.id] = baixando;
             }
-            this.socket.emitTo('message', requests, [this.socket.id])
+            this.socket.emitTo('message', requests.socket[this.socket.id], [this.socket.id])
 
             cloudinary.uploader.upload(`tmp/uploads/${filename}.${data.type}`, {
                 resource_type: "auto",
@@ -107,8 +106,8 @@ class SongController {
                 percent: 100,
                 message: 'Salvo com sucesso'
             }
-            requests[index] = baixando;
-            this.socket.emitTo('message', requests, [this.socket.id])
+            requests[index].socket[this.socket.id] = baixando;
+            this.socket.emitTo('message', requests.socket[this.socket.id], [this.socket.id])
         });
 
     }

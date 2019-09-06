@@ -69,7 +69,7 @@ class PlaylistController {
             await cloudinary.uploader.destroy(playlist.songs[i].publicid, { resource_type: "video" })
         }
         console.log(playlist.songs)
-
+        return playlist;
         //await playlist.delete()
     }
 }

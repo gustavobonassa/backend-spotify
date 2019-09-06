@@ -14,6 +14,9 @@ class SongController {
         this.request = request
         this.auth = auth
     }
+    onMessage(data) {
+        console.log(data);
+    }
     async onSong(data) {
         //this.socket.broadcastToAll('message', data)
         let video

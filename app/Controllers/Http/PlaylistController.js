@@ -67,8 +67,8 @@ class PlaylistController {
         await playlist.load('songs')
         for (let i = 0; i < playlist.songs.length; i++) {
             await cloudinary.uploader.destroy(playlist.songs[i].publicid, { resource_type: "video" })
-            console.log(playlist.songs[i].publicid)
         }
+        console.log(playlist.songs)
 
         //await playlist.delete()
     }

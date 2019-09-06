@@ -64,8 +64,9 @@ class PlaylistController {
 
     async destroy({ params }) {
         const playlist = await Playlist.findOrFail(params.id)
-        var songs = [];
-        songs = await playlist.load('songs')
+        await playlist.load('songs')
+        songs = []
+        songs = playlist;
         for (let i = 0; i < playlist.songs.length; i++) {
             await cloudinary.uploader.destroy(songs[i].publicid, { resource_type: "video" })
         }

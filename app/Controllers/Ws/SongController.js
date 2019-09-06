@@ -6,7 +6,7 @@ const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
 const cloudinary = require('../../../resources/CloudinaryService');
 
-var requests = [];
+var requests = {};
 
 class SongController {
     constructor({ socket, request, auth }) {
@@ -14,6 +14,7 @@ class SongController {
         this.request = request
         this.auth = auth
 
+        request.socket[this.socket.id] = []
         console.log('A new subscription for room topic', socket.topic)
     }
     onMessage(data) {

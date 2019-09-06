@@ -6,7 +6,6 @@ const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
 const cloudinary = require('../../../resources/CloudinaryService');
 
-var requests = [];
 var id = -1;
 class SongController {
     constructor({ socket, request, auth }) {
@@ -20,6 +19,7 @@ class SongController {
         console.log(data);
     }
     async onSong(data) {
+        var requests = [];
         //this.socket.broadcastToAll('message', data)
         let video
         let filename = Date.now()

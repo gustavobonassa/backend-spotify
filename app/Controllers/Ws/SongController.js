@@ -7,12 +7,17 @@ const momentDurationFormatSetup = require("moment-duration-format");
 const cloudinary = require('../../../resources/CloudinaryService');
 
 var requests = [];
-var id = -1;
+
 class SongController {
     constructor({ socket, request, auth }) {
         this.socket = socket
         this.request = request
         this.auth = auth
+
+        console.log('A new subscription for room topic', socket.topic)
+    }
+    onMessage(data) {
+        console.log(data);
     }
     async onSong(data) {
         //this.socket.broadcastToAll('message', data)
@@ -52,9 +57,8 @@ class SongController {
             }
             console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB) Musica: ${baixando.audioName} Duracao: ${baixando.duration}\n`);
 
-            this.socket.emit('message', requests)
+            this.socket.emitTo('message', requests, [this.socket.id])
         });
-        id++
         await video.on('end', () => {
             console.log('terminou de baixar')
             let baixando = {
@@ -69,7 +73,7 @@ class SongController {
             } else {
                 requests[index] = baixando;
             }
-            this.socket.emit('message', requests)
+            this.socket.emitTo('message', requests, [this.socket.id])
 
             cloudinary.uploader.upload(`tmp/uploads/${filename}.${data.type}`, {
                 resource_type: "auto",
@@ -103,7 +107,7 @@ class SongController {
                 message: 'Salvo com sucesso'
             }
             requests[index] = baixando;
-            this.socket.emit('message', requests)
+            this.socket.emitTo('message', requests, [this.socket.id])
         });
 
     }

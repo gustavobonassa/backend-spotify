@@ -10,11 +10,11 @@ class UserController {
         const data = request.only(['username', 'email', 'password'])
         const upload = request.file('avatar')
 
-        const inviteQuery = await Invite.query().where('email', data.email).first()
+        // const inviteQuery = await Invite.query().where('email', data.email).first()
 
-        if (!inviteQuery) {
-            return response.status(401).send({ message: 'Voce nao foi convidado' })
-        }
+        // if (!inviteQuery) {
+        //     return response.status(401).send({ message: 'Voce nao foi convidado' })
+        // }
 
         const nameFile = Date.now()
         const fileName = `${nameFile}.${upload.subtype}`
@@ -24,7 +24,7 @@ class UserController {
         if(!upload.moved()){
             throw upload.error()
         }
-        await inviteQuery.delete()
+
         const result = await cloudinary.uploader.upload(`tmp/uploads/${fileName}`, {
             resource_type: "auto",
             public_id: `avatars/${nameFile}`,

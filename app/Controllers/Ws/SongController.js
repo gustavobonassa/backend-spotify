@@ -6,18 +6,18 @@ const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
 const cloudinary = require('../../../resources/CloudinaryService');
 
-var requests = [];
+var requests = {};
 
 class SongController {
-    constructor({ socket, request, auth }) {
+    constructor({ socket, request }) {
         this.socket = socket
         this.request = request
-        this.auth = auth
 
         console.log('A new subscription for room topic', socket.topic)
     }
     onMessage(data) {
         console.log(data);
+        this.onSong(data);
     }
     async onSong(data) {
         //this.socket.broadcastToAll('message', data)
@@ -26,12 +26,8 @@ class SongController {
         const filter = (data.type === "mp3") ? 'audioonly' : null;
         video = await ytdl(data.url, { filter: filter, quality: data.quality })
         video.pipe(fs.createWriteStream(`tmp/uploads/${filename}.${data.type}`))
-        var infoSong = {};
+        const infoSong = await ytdl.getInfo(data.url);
 
-
-        await video.on('info', (info) => {
-            infoSong = info;
-        })
         await video.on('progress', (chunkLength, downloaded, total) => {
             //console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`);
             //let baixando = `(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB)\n`
@@ -46,18 +42,14 @@ class SongController {
                 audioName: infoSong.player_response.videoDetails.title,
                 duration: tempo,
                 finished: false,
-                percent
+                percent,
+                playlist: data.playlist,
+                url: data.url,
             }
 
-            var index = requests.findIndex((e) => e.audioName === baixando.audioName);
-            if (index === -1) {
-                requests.push(baixando);
-            } else {
-                requests[index] = baixando;
-            }
             console.log(`(${(downloaded / 1024 / 1024).toFixed(2)}MB of ${(total / 1024 / 1024).toFixed(2)}MB) Musica: ${baixando.audioName} Duracao: ${baixando.duration}\n`);
 
-            this.socket.emitTo('message', requests, [this.socket.id])
+            this.socket.emitTo('message', baixando, [this.socket.id])
         });
         await video.on('end', () => {
             console.log('terminou de baixar')
@@ -65,15 +57,11 @@ class SongController {
                 audioName: infoSong.player_response.videoDetails.title,
                 finished: true,
                 percent: 100,
-                message: 'Salvando na nuvem...'
+                message: 'Salvando na nuvem',
+                playlist: data.playlist,
+                url: data.url,
             }
-            var index = requests.findIndex((e) => e.audioName === baixando.audioName);
-            if (index === -1) {
-                requests.push(baixando);
-            } else {
-                requests[index] = baixando;
-            }
-            this.socket.emitTo('message', requests, [this.socket.id])
+            this.socket.emitTo('message', baixando, [this.socket.id])
 
             cloudinary.uploader.upload(`tmp/uploads/${filename}.${data.type}`, {
                 resource_type: "auto",
@@ -87,27 +75,36 @@ class SongController {
                     fs.unlinkSync(`tmp/uploads/${filename}.${data.type}`)
                     console.log('File deleted')
                     var tempo = moment.duration(parseInt(infoSong.player_response.videoDetails.lengthSeconds), 'seconds').format("m:ss");
-                    Song.create({
-                        playlist_id: data.playlist,
-                        name: data.name || infoSong.media.song || infoSong.player_response.videoDetails.title,
-                        url: result.url,
-                        type: 'audio',
-                        subtype: data.type,
-                        publicid: result.public_id,
-                        album: infoSong.media.album || null,
-                        author: data.artist || infoSong.media.artist || null,
-                        thumbnail: infoSong.player_response.videoDetails.thumbnail.thumbnails[0].url,
-                        duration: tempo
-                    })
+                    try {
+                        if (data.playlist > 0) {
+                            Song.create({
+                                playlist_id: data.playlist,
+                                name: data.name || infoSong.player_response.videoDetails.title,
+                                url: result.url,
+                                type: 'audio',
+                                subtype: data.type,
+                                publicid: result.public_id,
+                                album: null,
+                                author: data.artist || null,
+                                thumbnail: infoSong.player_response.videoDetails.thumbnail.thumbnails[0].url,
+                                duration: tempo
+                            })
+                        }
+
+                    } catch (error) {
+                        console.log("error")
+                    }
                 });
             baixando = {
                 audioName: infoSong.player_response.videoDetails.title,
                 finished: true,
                 percent: 100,
-                message: 'Salvo com sucesso'
+                message: 'Salvo com sucesso',
+                playlist: data.playlist,
+                url: data.url,
             }
-            requests[index] = baixando;
-            this.socket.emitTo('message', requests, [this.socket.id])
+
+            this.socket.emitTo('message', baixando, [this.socket.id])
         });
 
     }

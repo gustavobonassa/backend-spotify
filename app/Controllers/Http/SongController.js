@@ -3,7 +3,7 @@
 const Song = use('App/Models/Song')
 const fs = require('fs');
 const ytdl = require('ytdl-core');//baixa video, audio do yt
-const searchYt = require('youtube-search');//procura no yt
+const searchYt = require('yt-search');//procura no yt
 const cloudinary = require('../../../resources/CloudinaryService');
 const moment = require("moment");
 const momentDurationFormatSetup = require("moment-duration-format");
@@ -17,14 +17,16 @@ class SongController {
         }
 
         opts = { ...opts, maxResults: data.maxResults || 5 }
-        const busca = await searchYt(data.search, opts);
-        return busca
+        const busca = await searchYt(data.search);
+
+        return busca.videos || []
     }
 
     async download({ request, response }) {
         const data = request.only(['url', 'type', 'quality', 'playlist', 'name', 'artist'])
         let video
         let filename = Date.now()
+        console.log("teste")
         const filter = (data.type === "mp3") ? 'audioonly' : null;
         video = ytdl(data.url, { filter: filter, quality: data.quality })
         video.pipe(fs.createWriteStream(`tmp/uploads/${filename}.${data.type}`))

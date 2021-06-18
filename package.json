@@ -28,7 +28,7 @@
     "@adonisjs/lucid-slugify": "^1.0.3",
     "@adonisjs/mail": "^3.0.9",
     "@adonisjs/validator": "^5.0.6",
-    "@adonisjs/websocket": "^1.0.11",
+    "@adonisjs/websocket": "^1.0.12",
     "adonis-acl": "^1.1.1",
     "cloudinary": "^1.14.0",
     "googleapis": "^40.0.1",
@@ -36,8 +36,8 @@
     "moment-duration-format": "^2.3.2",
     "mysql": "^2.17.1",
     "pg": "^7.12.0",
-    "youtube-search": "^1.1.4",
-    "ytdl-core": "^0.29.3"
+    "yt-search": "^2.8.0",
+    "ytdl-core": "^4.8.2"
   },
   "devDependencies": {},
   "autoload": {

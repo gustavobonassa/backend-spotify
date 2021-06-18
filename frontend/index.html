@@ -20,12 +20,11 @@
     ws.on('open', () => {
         document.getElementById('status').classList.add('online')
     })
-    const chat = ws.subscribe('chat')
+    const chat = ws.subscribe('song')
     chat.emit('message', {
         "url": "https://www.youtube.com/watch?v=B5hsa_IMTXc",
         "type": "mp3",
         "quality": "highest",
-        "playlist": 3
     })
     chat.on('message', (data) => {
         document.getElementById('teste').innerHTML = data

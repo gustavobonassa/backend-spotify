@@ -15,12 +15,12 @@ class UserController {
         // if (!inviteQuery) {
         //     return response.status(401).send({ message: 'Voce nao foi convidado' })
         // }
-
         const nameFile = Date.now()
         const fileName = `${nameFile}.${upload.subtype}`
         await upload.move(Helpers.tmpPath('uploads'), {
             name: fileName
         })
+        console.log("teste")
         if(!upload.moved()){
             throw upload.error()
         }

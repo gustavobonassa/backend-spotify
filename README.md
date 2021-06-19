@@ -1,32 +1,37 @@
-adonis install @adonisjs/lucid-slugify
-
-npm install --save adonis-kue //email
-
-# Adonis API application
-
-This is the boilerplate for creating an API server in AdonisJs, it comes pre-configured with.
-
-1. Bodyparser
-2. Authentication
-3. CORS
-4. Lucid ORM
-5. Migrations and seeds
-
-## Setup
-
-Use the adonis command to install the blueprint
-
-```bash
-adonis new yardstick --api-only
+Esse repositorio serve como backend para:
+```
+https://github.com/gustavobonassa/frontend-spotify
 ```
 
-or manually clone the repo and then run `npm install`.
 
+## Como rodar
 
-### Migrations
+### Nuvem
 
-Run the following command to run startup migrations.
+Para salvar as imagens e musicas foi utilizado o cloudinary, você pode criar uma conta e adicionar as informações no .env.example
 
+```
+https://cloudinary.com/
+```
+### Migrações
+
+Você pode escolher qualquer banco de dados que preferir: MySQL, postgresql...
+
+Preencha as informações do seu banco com base no .env.example
+
+Instale o adonis-cli seguindo o tutorial
+
+```
+https://legacy.adonisjs.com/docs/4.1/installation
+```
+
+Então você pode rodar o seguinte comando para criar as tabelas
 ```js
 adonis migration:run
+```
+
+### Rodando
+Remova o .example do final do .env então você pode rodar no terminal:
+```
+adonis serve --dev
 ```

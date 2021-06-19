@@ -7,6 +7,9 @@
 */
 const Route = use('Route')
 
+Route.get('/status', () => {
+    return "boa"
+})
 Route.post('sessions', 'SessionController.store').validator('Session')
 Route.post('users', 'UserController.store').validator('User')
 

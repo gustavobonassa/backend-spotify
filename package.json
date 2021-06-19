@@ -30,7 +30,7 @@
     "@adonisjs/validator": "^5.0.6",
     "@adonisjs/websocket": "^1.0.12",
     "adonis-acl": "^1.1.1",
-    "cloudinary": "^1.14.0",
+    "cloudinary": "^1.26.0",
     "googleapis": "^40.0.1",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",

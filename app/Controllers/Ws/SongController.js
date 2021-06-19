@@ -50,7 +50,8 @@ class SongController {
             return resolve(url);
           })
         });
-      }
+    }
+
     async onSong(data) {
         //this.socket.broadcastToAll('message', data)
         let video

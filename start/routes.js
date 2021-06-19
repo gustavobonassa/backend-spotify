@@ -15,6 +15,7 @@ Route.put('passwords', 'ForgotPasswordController.update').validator('ResetPasswo
 
 Route.post('/song', 'SongController.download')
 Route.post('/search', 'SongController.search')
+Route.get('/playlistdownload/:id', 'PlaylistController.downloadAll')
 
 Route.group(() => {
     Route.delete('/song/:id', 'SongController.destroy')

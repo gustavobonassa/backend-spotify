@@ -16,7 +16,6 @@ class SongController {
             return response.status(401).send({ message: 'Digite algo' })
         }
 
-        opts = { ...opts, maxResults: data.maxResults || 5 }
         const busca = await searchYt(data.search);
 
         return busca.videos || []
@@ -71,7 +70,7 @@ class SongController {
     async destroy({ params, response }) {
         const song = await Song.query().where('id', params.id).first()
         if (!song) {
-            return response.status(404).send({ message: 'Som não encontrado' })
+            return response.status(404).send({ message: 'Musica não encontrada' })
         }
         await cloudinary.uploader.destroy(song.publicid, { resource_type: "video" })
 
